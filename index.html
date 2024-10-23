@@ -3,8 +3,8 @@
   <head>
 		<meta charset="UTF-8">
 		<meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <script src="https://q5js.org/q5.min.js"></script>
-    <!-- <link rel="stylesheet" type="text/css" href="style.css"> -->
+    <!-- <script src="https://q5js.org/q5.min.js"></script> -->
+		<script src="https://cdnjs.cloudflare.com/ajax/libs/p5.js/1.10.0/p5.min.js"></script>
 		 <style>
 			html, body {
 				margin: 0;
@@ -33,17 +33,78 @@
 // modelo pagina qrs
 
 function setup() {
-	let h = 100;
 
-	createCanvas(540, h).parent("contenedor-canvas");
-	displayMode("maxed");
+	// medidas viewport
+	let vpt_w = window.visualViewport?.width || window.innerWidth;
+	let vpt_h = window.visualViewport?.height || window.innerHeight;
 
-	background(200, 80, 20);
+	// calculo canvas
+	let cnv_w = 540; // mitad de 1080
+	let cnv_h = cnv_w * vpt_h / vpt_w;
+
+	createCanvas(cnv_w, cnv_h).parent("contenedor-canvas");
+	windowResized(); // responsive
+	textAlign(CENTER, CENTER);
+	noStroke();
 }
 
 function draw() {
-	fill(255, 100);
-	circle(frameCount % width, frameCount % height, 100);
+	background(200, 80, 20, 20);
+
+	fill(150, 150, 220);
+	circle(
+		(frameCount % (width - 100)) + 50,
+		(frameCount % (height - 100)) + 50,
+		100
+	);
+
+	fill(220, 150, 150);
+	circle(
+		width - ((frameCount % (width - 100)) + 50),
+		(frameCount % (height - 100)) + 50,
+		100
+	);
+
+	fill(150, 220, 150);
+	circle(
+		(frameCount % (width - 100)) + 50,
+		height - ((frameCount % (height - 100)) + 50),
+		100
+	);
+
+	fill(220);
+	circle(
+		width - ((frameCount % (width - 100)) + 50),
+		height - ((frameCount % (height - 100)) + 50),
+		100
+	);
+
+	fill(0);
+	text("width: " + width + "\nheight: " + floor(height), 270, height * 0.5)
+}
+
+function windowResized() {
+  
+  let pag = document.getElementsByTagName("main")[0];
+  let cnv = document.getElementById("defaultCanvas0");
+  
+  // margen <== EDITABLE porcentaje entre 0% y 50%
+  let mrg = 0; 
+  
+  pag.style.overflow = "hidden";
+  pag.style.display = "flex";
+  pag.style.justifyContent = "center";
+  pag.style.alignItems = "center";
+  pag.style.height = "100svh";
+ 
+  if (windowWidth * height > windowHeight * width) {
+    cnv.style.height = (100 - mrg * 2) + "svh";
+    cnv.style.width = ((100 - mrg * 2) / height) * width + "svh";
+  }
+  else {
+    cnv.style.width = (100 - mrg * 2) + "vw";
+    cnv.style.height = ((100 - mrg * 2) / width) * height + "vw";
+  }
 }
 //
 /////////////////////////////////////////////
