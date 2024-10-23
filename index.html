@@ -15,7 +15,7 @@
 				padding: 0;
 				overflow: hidden;
 				box-sizing: border-box;
-				background-color: blueviolet;
+				background-color: rgb(240, 143, 32);
 			}
 
 			#contenedor-canvas {
@@ -28,7 +28,7 @@
   			justify-content: center;
   			align-items: center;
 
-				background-color: aqua;
+				background-color: rgb(240, 143, 32);;
 			}
 		 </style>
   </head>
@@ -37,6 +37,7 @@
     </main>
     <script>
 
+/////////////////////////////////////////////
 /////////////////////////////////////////////
 // sketch plantilla qrs
 
@@ -51,18 +52,32 @@ let entrada_x, entrada_y;
 function setup() {
 
 	// medidas viewport
-	let vpt_w = window.visualViewport?.width || window.innerWidth;
-	let vpt_h = window.visualViewport?.height || window.innerHeight;
+	const vpt0_w = window.visualViewport?.width || window.innerWidth;
+	const vpt0_h = window.visualViewport?.height || window.innerHeight;
 
 	// calculo canvas
-	let cnv_w = 540; // mitad de 1080
-	let cnv_h = cnv_w * vpt_h / vpt_w;
+	const cnv0_w = 540; // mitad de 1080
+	const cnv0_h = cnv0_w * vpt0_h / vpt0_w;
 	
-	createCanvas(cnv_w, cnv_h).parent("contenedor-canvas");
+	createCanvas(cnv0_w, cnv0_h).parent("contenedor-canvas");
 	windowResized(); // responsive
 	
-	console.log("vpt: ", floor(vpt_w), floor(vpt_h), vpt_w / vpt_h);
-	console.log("cnv: ", floor(cnv_w), floor(cnv_h), cnv_w / cnv_h);
+	setTimeout(
+		() => {
+			const vpt1_w = window.visualViewport?.width || window.innerWidth;
+			const vpt1_h = window.visualViewport?.height || window.innerHeight;
+			const cnv1_w = 540; // mitad de 1080
+			const cnv1_h = cnv0_w * vpt0_h / vpt0_w;
+
+			if (cnv0_h !== cnv1_h) console.log("RESIZEDDD!!! ", cnv0_h, cnv1_h);
+
+			resizeCanvas(cnv1_w, cnv1_h);
+			windowResized();
+		}, 1
+	);
+
+	console.log("vpt: ", floor(vpt0_w), floor(vpt0_h), vpt0_w / vpt0_h);
+	console.log("cnv: ", floor(cnv0_w), floor(cnv0_h), cnv0_w / cnv0_h);
 
 	background(140);
 	textAlign(CENTER, CENTER);
@@ -217,6 +232,7 @@ function windowResized() {
   }
 }
 //
+/////////////////////////////////////////////
 /////////////////////////////////////////////
 
 		</script>
