@@ -61,8 +61,8 @@ function setup() {
 	createCanvas(cnv_w, cnv_h).parent("contenedor-canvas");
 	windowResized(); // responsive
 	
-	console.log("vpt: ", floor(vpt_w), floor(vpt_h), floor(vpt_w / vpt_h));
-	console.log("cnv: ", floor(cnv_w), floor(cnv_h), floor(cnv_w / cnv_h));
+	console.log("vpt: ", floor(vpt_w), floor(vpt_h), vpt_w / vpt_h);
+	console.log("cnv: ", floor(cnv_w), floor(cnv_h), cnv_w / cnv_h);
 
 	background(140);
 	textAlign(CENTER, CENTER);
