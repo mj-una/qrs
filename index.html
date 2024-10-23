@@ -60,7 +60,7 @@ function setup() {
 	const cnv0_h = cnv0_w * vpt0_h / vpt0_w;
 	
 	createCanvas(cnv0_w, cnv0_h).parent("contenedor-canvas");
-	windowResized(); // responsive
+	canvasResponsive(); // responsive
 	
 	setTimeout(
 		() => {
@@ -72,7 +72,7 @@ function setup() {
 			if (cnv0_h !== cnv1_h) console.log("RESIZEDDD!!! ", cnv0_h, cnv1_h);
 
 			resizeCanvas(cnv1_w, cnv1_h);
-			windowResized();
+			canvasResponsive();
 			background(140);
 		}, 2
 	);
@@ -219,13 +219,13 @@ function touchEnded() {
 
 /////////////////////////
 
-function windowResized() {
+function canvasResponsive() {
+	console.log("t: " + millis());
   
   const main = document.getElementById("contenedor-canvas");
 	const cnvs = document.getElementById("defaultCanvas0");
 	
 	const visual = window.visualViewport ? true : false;
-	console.log("visual: " + visual);
 
 	main.style.width = visual ? "100svw" : "100vw";
 	main.style.height = visual ? "100svh" : "100vh";
@@ -239,6 +239,8 @@ function windowResized() {
     cnvs.style.height = (100 / width) * height + (visual ? "svw" : "vw");
   }
 }
+
+window.addEventListener('resize', () => canvasResponsive());
 //
 /////////////////////////////////////////////
 /////////////////////////////////////////////
