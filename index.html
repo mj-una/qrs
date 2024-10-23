@@ -1,6 +1,31 @@
-<!-- plantilla QRS v0.1 -->
-<!-- para usar sin citar autoria -->
-<!-- al dominio publico. ( cc0 ) -->
+<!-- 
+	PLANTILLA QRS v0.2
+
+	Código creado para la campaña colectiva de QRs con baits personalizados.
+	Escrito desde 0 a partir de las pruebas que he estado haciendo el último año.
+
+	DESCRIPCION
+	Esta plantilla roza los limites de las resticciones los navegadores actuales.
+	Contiene tres soluciones técnicas para usar p5.js/q5.js de forma que parezca
+	una pagina web (pero con las ventajas del lienzo 100% intercativo):
+	1. - El scroll es una simulacion calculada a partir del touch, de modo que
+	cada desplazamiento se interpreta como un click válido sobre la pagina.
+	2. - Al liberar el segundo touch, se abre el lienzo en pantalla completa
+	con permisos completos para reproducir audio y video.
+	3. - Se adapta perfecto a la pantalla del celular.
+
+	ANTILICENCIA
+	Al dominio publico. Para usar libremente, sin citar autoria.
+	Publicado bajo Creative Commons Zero (CC0 1.0 Universal).
+	
+	DEDICATORIA
+	En defensa de la universidad pública, abierta, gratuita, accesible.
+	Aprender es una necesidad. Mi total agradecimiento a las personas
+	que me han ayudado durante el proceso.
+
+	mj-una
+-->
+
 
 <!DOCTYPE html>
 <html lang="es">
@@ -15,7 +40,9 @@
 				padding: 0;
 				overflow: hidden;
 				box-sizing: border-box;
-				background-color: rgb(250, 143, 32);
+				background-color: rgb(250, 100, 0);
+  			touch-action: manipulation;
+				user-select: none;
 			}
 
 			#contenedor-canvas {
@@ -28,7 +55,7 @@
   			justify-content: center;
   			align-items: center;
 
-				background-color: rgb(200, 213, 32);;
+				background-color: rgb(210, 210, 0);;
 			}
 		 </style>
   </head>
@@ -41,45 +68,20 @@
 /////////////////////////////////////////////
 // sketch plantilla qrs
 
-let scroll = 0;
-let scrollAcc = 0;
+let inicio = true;
 
 let touch = false;
 let entrada_x, entrada_y;
+
+let scroll = 0;
+let scrollAcc = 0;
 
 /////////////////////////
 
 function setup() {
 
-	// medidas viewport
-	const vpt0_w = window.visualViewport?.width || window.innerWidth;
-	const vpt0_h = window.visualViewport?.height || window.innerHeight;
-
-	// calculo canvas
-	const cnv0_w = 540; // mitad de 1080
-	const cnv0_h = cnv0_w * vpt0_h / vpt0_w;
-	
-	createCanvas(cnv0_w, cnv0_h).parent("contenedor-canvas");
-	canvasResponsive(); // responsive
-	
-	setTimeout(
-		() => {
-			const vpt1_w = window.visualViewport?.width || window.innerWidth;
-			const vpt1_h = window.visualViewport?.height || window.innerHeight;
-			const cnv1_w = 540; // mitad de 1080
-			const cnv1_h = cnv0_w * vpt0_h / vpt0_w;
-
-			if (cnv0_h !== cnv1_h) {
-				console.log("RESIZEDDD!!! ", cnv0_h, cnv1_h);
-				resizeCanvas(cnv1_w, cnv1_h);
-				canvasResponsive();
-				background(140);
-			}
-		}, 2
-	);
-
-	console.log("vpt: ", floor(vpt0_w), floor(vpt0_h), vpt0_w / vpt0_h);
-	console.log("cnv: ", floor(cnv0_w), floor(cnv0_h), cnv0_w / cnv0_h);
+	createCanvas(540, 960).parent("contenedor-canvas");
+	adaptarCanvas(); // resize y responsive
 
 	background(140);
 	textAlign(CENTER, CENTER);
@@ -95,6 +97,15 @@ function draw() {
 	if (touch) {
 		scroll = entrada_y - mouseY;
 	}
+
+	// dibujos
+	if (inicio) dibujoInicio();
+	else dibujoSpam();
+}
+
+/////////////////////////
+
+function dibujoInicio() {
 
 	// fondo principal
 	background(140, 6);
@@ -140,7 +151,7 @@ function draw() {
 		fill(220, 40 + i * 35, 215 - i * 35);
 		circle(
 			270,
-			height * 0.5 + 400 * i - (touch ? scroll + scrollAcc : scrollAcc),
+			height * 0.5 + 300 * i - (touch ? scroll + scrollAcc : scrollAcc),
 			100
 		);
 
@@ -148,7 +159,7 @@ function draw() {
 		fill(255);
 		noStroke();
 		textSize(34);
-		text(i, 270, height * 0.5 + 400 * i - (touch ? scroll + scrollAcc : scrollAcc) + 3)
+		text(i, 270, height * 0.5 + 300 * i - (touch ? scroll + scrollAcc : scrollAcc) + 3)
 	}
 	pop();
 
@@ -170,6 +181,27 @@ function draw() {
 		"\nscroll: " + floor(scroll),
 		470, height * 0.5 - scroll
 	);
+}
+
+/////////////////////////
+
+function dibujoSpam() {
+	background(0, 255, 255, 10);
+
+	const rx = random(width);
+	const ry = random(height);
+	const rr = random(-PI, PI);
+	const rs = random(0.5, 5);
+
+	push();
+	translate(rx, ry);
+	rotate(rr);
+	scale(rs);
+
+	textSize(20);
+	fill(255, 0, 0);
+	text("SAPM!", 0, 0)
+	pop();
 }
 
 /////////////////////////
@@ -203,6 +235,7 @@ function touchStarted() {
 
 /////////////////////////
 
+let touched = false;
 let evitar_e = false;
 function touchEnded() {
 
@@ -213,31 +246,75 @@ function touchEnded() {
     evitar_e = false;
   }, 200);
 
-	// teminar touch
+	// teminar touch generico
 	scrollAcc += scroll;
 	touch = false;
 	background(40);
+
+	// evitar fuera de pantalla
+	if (
+		mouseX < 0 ||
+		mouseX > width ||
+		mouseY < 0 ||
+		mouseY > height
+	) return;
+
+	// PRIMER TOUCH VALIDADO
+	if (!touched) {
+		touched = true;
+		return;
+	}
+
+	// SEGUNDO TOUCH VALIDADO
+
+	// cambio funcion de dibujo
+	inicio = false;
+
+	// solicitud de fullscreen
+	if (document.documentElement.requestFullscreen) { // CHR (estandar)
+		document.documentElement.requestFullscreen().then(() => {
+		}).catch((e) => console.log(`>> E1.1\n ${e}`));
+	}
+	else if (document.documentElement.webkitRequestFullscreen) { // SFI
+		document.documentElement.webkitRequestFullscreen().then(() => {
+		}).catch((e) => console.log(`>> E1.2\n ${e}`));
+	}
+	else if (document.documentElement.mozRequestFullScreen) { // FFX
+		document.documentElement.mozRequestFullScreen().then(() => {
+		}).catch((e) => console.log(`>> E1.3\n ${e}`));
+	}
 }
 
 /////////////////////////
 
-function canvasResponsive() {
-	console.log("CR__ t: " + millis());
+function adaptarCanvas() {
+
+	// tipo de viewport
+	const visual = window.visualViewport ? true : false;
   
+	// medidas viewport
+	const vpt_w = visual ? window.visualViewport.width : window.innerWidth;
+	const vpt_h = visual ? window.visualViewport.height : window.innerHeight;
+
+	// calculo canvas
+	const cnv_w = 540; // mitad de 1080
+	const cnv_h = cnv_w * vpt_h / vpt_w;
+
+	// elementos del dom
   const main = document.getElementById("contenedor-canvas");
 	const cnvs = document.getElementById("defaultCanvas0");
 	
-	const visual = window.visualViewport ? true : false;
+	// resize
+	resizeCanvas(cnv_w, cnv_h);
+	console.log("######################");
+	console.log("\nTT__: ", millis());
+	console.log("CR__ vpt: ", vpt_w, vpt_h, floor(vpt_w / vpt_h));
+	console.log("CR__ cnv: ", cnv_w, cnv_h, floor(cnv_w / cnv_h));
+	console.log("\n######################");
 
-	console.log(
-		"CR__ vpt: ",
-		window.visualViewport?.width || window.innerWidth,
-		window.visualViewport?.height || window.innerHeight
-	);
-
+	// responsive
 	main.style.width = visual ? "100svw" : "100vw";
 	main.style.height = visual ? "100svh" : "100vh";
-
   if (windowWidth * height > windowHeight * width) {
     cnvs.style.height = visual ? "100svh" : "100vh";
     cnvs.style.width = (100 / height) * width + (visual ? "svh" : "vh");
@@ -248,7 +325,44 @@ function canvasResponsive() {
   }
 }
 
-window.addEventListener('resize', () => canvasResponsive());
+/////////////////////////
+
+// eventos
+window.addEventListener('load', function() {
+
+	// cambio de dimensiones en ventana
+  window.addEventListener('resize', () => adaptarCanvas());
+
+	// exito en solicitud fullscreen
+	document.addEventListener("fullscreenchange", (e) => { // CHR y FFX
+		console.log(">> E0 fullscreen CHR/FFZ");
+		for (let i in e) console.log(">> E0 " + i, e[i]);
+	});
+	document.addEventListener("webkitfullscreenchange", (e) => { // SFI
+		console.log(">> E0 fullscreen SFI");
+		for (let i in e) console.log(">> E0 " + i, e[i]);
+	});
+
+	// error en solicitud fullscreen
+	document.addEventListener("fullscreenerror", (e) => {
+		console.log(">> E2 fullscreen ERROR!!!");
+		for (let i in e) console.log(">> E2 " + i, e[i]);
+	});
+
+	// prevenir default touch
+	document.addEventListener('touchstart', function(e) {
+		if (e.touches.length > 1) e.preventDefault(); // gestos touch multiple
+	}, { passive: false });
+
+	document.addEventListener('touchmove', function(e) {
+		e.preventDefault(); // "volver" o "cargar de nuevo"
+	}, { passive: false });
+
+	document.addEventListener('gesturestart', function(e) {
+		e.preventDefault(); // zoom
+	}, { passive: false });
+
+});
 //
 /////////////////////////////////////////////
 /////////////////////////////////////////////
