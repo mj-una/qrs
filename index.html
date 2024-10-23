@@ -69,11 +69,12 @@ function setup() {
 			const cnv1_w = 540; // mitad de 1080
 			const cnv1_h = cnv0_w * vpt0_h / vpt0_w;
 
-			if (cnv0_h !== cnv1_h) console.log("RESIZEDDD!!! ", cnv0_h, cnv1_h);
-
-			resizeCanvas(cnv1_w, cnv1_h);
-			canvasResponsive();
-			background(140);
+			if (cnv0_h !== cnv1_h) {
+				console.log("RESIZEDDD!!! ", cnv0_h, cnv1_h);
+				resizeCanvas(cnv1_w, cnv1_h);
+				canvasResponsive();
+				background(140);
+			}
 		}, 2
 	);
 
@@ -139,7 +140,7 @@ function draw() {
 		fill(220, 40 + i * 35, 215 - i * 35);
 		circle(
 			270,
-			height * 0.5 + height * 0.25 * i - (touch ? scroll + scrollAcc : scrollAcc),
+			height * 0.5 + 400 * i - (touch ? scroll + scrollAcc : scrollAcc),
 			100
 		);
 
@@ -147,7 +148,7 @@ function draw() {
 		fill(255);
 		noStroke();
 		textSize(34);
-		text(i, 270, height * 0.5 + height * 0.25 * i - (touch ? scroll + scrollAcc : scrollAcc) + 3)
+		text(i, 270, height * 0.5 + 400 * i - (touch ? scroll + scrollAcc : scrollAcc) + 3)
 	}
 	pop();
 
@@ -157,7 +158,8 @@ function draw() {
 		420,
 		height * 0.35 - scroll,
 		100,
-		height * 0.29
+		height * 0.29,
+		20
 	);
 
 	// texto scroll
@@ -220,12 +222,18 @@ function touchEnded() {
 /////////////////////////
 
 function canvasResponsive() {
-	console.log("t: " + millis());
+	console.log("CR__ t: " + millis());
   
   const main = document.getElementById("contenedor-canvas");
 	const cnvs = document.getElementById("defaultCanvas0");
 	
 	const visual = window.visualViewport ? true : false;
+
+	console.log(
+		"CR__ vpt: ",
+		window.visualViewport?.width || window.innerWidth,
+		window.visualViewport?.height || window.innerHeight
+	);
 
 	main.style.width = visual ? "100svw" : "100vw";
 	main.style.height = visual ? "100svh" : "100vh";
