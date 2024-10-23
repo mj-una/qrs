@@ -15,7 +15,7 @@
 				padding: 0;
 				overflow: hidden;
 				box-sizing: border-box;
-				background-color: rgb(240, 143, 32);
+				background-color: rgb(250, 143, 32);
 			}
 
 			#contenedor-canvas {
@@ -28,7 +28,7 @@
   			justify-content: center;
   			align-items: center;
 
-				background-color: rgb(240, 143, 32);;
+				background-color: rgb(200, 213, 32);;
 			}
 		 </style>
   </head>
@@ -73,7 +73,8 @@ function setup() {
 
 			resizeCanvas(cnv1_w, cnv1_h);
 			windowResized();
-		}, 1
+			background(140);
+		}, 2
 	);
 
 	console.log("vpt: ", floor(vpt0_w), floor(vpt0_h), vpt0_w / vpt0_h);
