@@ -44,35 +44,36 @@ function setup() {
 
 	createCanvas(cnv_w, cnv_h).parent("contenedor-canvas");
 	windowResized(); // responsive
+	background(140);
 	textAlign(CENTER, CENTER);
 	noStroke();
 }
 
 function draw() {
-	background(200, 80, 20, 20);
+	background(140, 6);
 
-	fill(150, 150, 220);
+	fill(140, 140, 220);
 	circle(
 		(frameCount % (width - 100)) + 50,
 		(frameCount % (height - 100)) + 50,
 		100
 	);
 
-	fill(220, 150, 150);
+	fill(220, 140, 140);
 	circle(
 		width - ((frameCount % (width - 100)) + 50),
 		(frameCount % (height - 100)) + 50,
 		100
 	);
 
-	fill(150, 220, 150);
+	fill(140, 220, 140);
 	circle(
 		(frameCount % (width - 100)) + 50,
 		height - ((frameCount % (height - 100)) + 50),
 		100
 	);
 
-	fill(220);
+	fill(220, 220, 140);
 	circle(
 		width - ((frameCount % (width - 100)) + 50),
 		height - ((frameCount % (height - 100)) + 50),
