@@ -1,15 +1,19 @@
+<!-- plantilla QRS v0.1 -->
+<!-- para usar sin citar autoria -->
+<!-- al dominio publico. ( cc0 ) -->
+
 <!DOCTYPE html>
 <html lang="es">
   <head>
 		<meta charset="UTF-8">
 		<meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <!-- <script src="https://q5js.org/q5.min.js"></script> -->
 		<script src="https://cdnjs.cloudflare.com/ajax/libs/p5.js/1.10.0/p5.min.js"></script>
-		 <style>
+		<title>qrs</title>
+		<style>
 			html, body {
 				margin: 0;
 				padding: 0;
-				/* overflow: hidden; */
+				overflow: hidden;
 				box-sizing: border-box;
 				background-color: blueviolet;
 			}
@@ -19,10 +23,14 @@
 				width: 100svw;
 				height: 100vh;
 				height: 100svh;
+
+				display: flex;
+  			justify-content: center;
+  			align-items: center;
+
 				background-color: aqua;
 			}
 		 </style>
-		<title>qrs</title>
   </head>
   <body>
     <main id="contenedor-canvas">
@@ -30,7 +38,15 @@
     <script>
 
 /////////////////////////////////////////////
-// modelo pagina qrs
+// sketch plantilla qrs
+
+let scroll = 0;
+let scrollAcc = 0;
+
+let touch = false;
+let entrada_x, entrada_y;
+
+/////////////////////////
 
 function setup() {
 
@@ -44,14 +60,26 @@ function setup() {
 
 	createCanvas(cnv_w, cnv_h).parent("contenedor-canvas");
 	windowResized(); // responsive
+
 	background(140);
 	textAlign(CENTER, CENTER);
+	textSize(14);
 	noStroke();
 }
 
+/////////////////////////
+
 function draw() {
+	
+	// captura touch
+	if (touch) {
+		scroll = entrada_y - mouseY;
+	}
+
+	// fondo principal
 	background(140, 6);
 
+	// circulo fondo azul
 	fill(140, 140, 220);
 	circle(
 		(frameCount % (width - 100)) + 50,
@@ -59,6 +87,7 @@ function draw() {
 		100
 	);
 
+	// circulo fondo rojo
 	fill(220, 140, 140);
 	circle(
 		width - ((frameCount % (width - 100)) + 50),
@@ -66,6 +95,7 @@ function draw() {
 		100
 	);
 
+	// circulo fondo verde
 	fill(140, 220, 140);
 	circle(
 		(frameCount % (width - 100)) + 50,
@@ -73,6 +103,7 @@ function draw() {
 		100
 	);
 
+	// circulo fondo amarillo
 	fill(220, 220, 140);
 	circle(
 		width - ((frameCount % (width - 100)) + 50),
@@ -80,31 +111,106 @@ function draw() {
 		100
 	);
 
+	// circulos numerados
+	push();
+	for (let i = -6; i < 7; i++) {
+
+		// circulo
+		stroke(0)
+		fill(220, 40 + i * 35, 215 - i * 35);
+		circle(
+			270,
+			height * 0.5 + height * 0.25 * i - (touch ? scroll + scrollAcc : scrollAcc),
+			100
+		);
+
+		// numero
+		fill(255);
+		noStroke();
+		textSize(34);
+		text(i, 270, height * 0.5 + height * 0.25 * i - (touch ? scroll + scrollAcc : scrollAcc) + 3)
+	}
+	pop();
+
+	// fondo scroll
+	fill(220, 200, 200);
+	rect(
+		420,
+		height * 0.35 - scroll,
+		100,
+		height * 0.29
+	);
+
+	// texto scroll
 	fill(0);
-	text("width: " + width + "\nheight: " + floor(height), 270, height * 0.5)
+	text(
+		"width: " + width +
+		"\nheight: " + floor(height) +
+		"\nscroll: " + floor(scroll),
+		470, height * 0.5 - scroll
+	);
 }
+
+/////////////////////////
+
+let evitar_s = false;
+function touchStarted() {
+
+	// evitar doble accion
+	if (evitar_s) return;
+  evitar_s = true;
+  setTimeout(function() {
+    evitar_s = false;
+  }, 200);
+
+	// evitar fuera de pantalla
+	if (
+		mouseX < 0 ||
+		mouseX > width ||
+		mouseY < 0 ||
+		mouseY > height
+	) return;
+
+	// guardar inicio touch
+	entrada_x = mouseX;
+	entrada_y = mouseY;
+
+	// iniciar touch
+	touch = true;
+	background(160);
+}
+
+/////////////////////////
+
+let evitar_e = false;
+function touchEnded() {
+
+	// evitar doble accion
+	if (evitar_e) return;
+  evitar_e = true;
+  setTimeout(function() {
+    evitar_e = false;
+  }, 200);
+
+	// teminar touch
+	scrollAcc += scroll;
+	touch = false;
+	background(40);
+}
+
+/////////////////////////
 
 function windowResized() {
   
-  let pag = document.getElementsByTagName("main")[0];
-  let cnv = document.getElementById("defaultCanvas0");
-  
-  // margen <== EDITABLE porcentaje entre 0% y 50%
-  let mrg = 0; 
-  
-  pag.style.overflow = "hidden";
-  pag.style.display = "flex";
-  pag.style.justifyContent = "center";
-  pag.style.alignItems = "center";
-  pag.style.height = "100svh";
+  const cnv = document.getElementById("defaultCanvas0");
  
   if (windowWidth * height > windowHeight * width) {
-    cnv.style.height = (100 - mrg * 2) + "svh";
-    cnv.style.width = ((100 - mrg * 2) / height) * width + "svh";
+    cnv.style.height = "100svh";
+    cnv.style.width = (100 / height) * width + "svh";
   }
   else {
-    cnv.style.width = (100 - mrg * 2) + "vw";
-    cnv.style.height = ((100 - mrg * 2) / width) * height + "vw";
+    cnv.style.width = "100vw";
+    cnv.style.height = (100 / width) * height + "vw";
   }
 }
 //
