@@ -221,15 +221,22 @@ function touchEnded() {
 
 function windowResized() {
   
-  const cnv = document.getElementById("defaultCanvas0");
- 
+  const main = document.getElementById("contenedor-canvas");
+	const cnvs = document.getElementById("defaultCanvas0");
+	
+	const visual = window.visualViewport ? true : false;
+	console.log("visual: " + visual);
+
+	main.style.width = visual ? "100svw" : "100vw";
+	main.style.height = visual ? "100svh" : "100vh";
+
   if (windowWidth * height > windowHeight * width) {
-    cnv.style.height = "100svh";
-    cnv.style.width = (100 / height) * width + "svh";
+    cnvs.style.height = visual ? "100svh" : "100vh";
+    cnvs.style.width = (100 / height) * width + (visual ? "svh" : "vh");
   }
   else {
-    cnv.style.width = "100vw";
-    cnv.style.height = (100 / width) * height + "vw";
+    cnvs.style.width = visual ? "100svw" : "100vw";
+    cnvs.style.height = (100 / width) * height + (visual ? "svw" : "vw");
   }
 }
 //
