@@ -1,0 +1,53 @@
+<!DOCTYPE html>
+<html lang="es">
+  <head>
+		<meta charset="UTF-8">
+		<meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <script src="https://q5js.org/q5.min.js"></script>
+    <!-- <link rel="stylesheet" type="text/css" href="style.css"> -->
+		 <style>
+			html, body {
+				margin: 0;
+				padding: 0;
+				/* overflow: hidden; */
+				box-sizing: border-box;
+				background-color: blueviolet;
+			}
+
+			#contenedor-canvas {
+				width: 100vw;
+				width: 100svw;
+				height: 100vh;
+				height: 100svh;
+				background-color: aqua;
+			}
+		 </style>
+		<title>qrs</title>
+  </head>
+  <body>
+    <main id="contenedor-canvas">
+    </main>
+    <script>
+
+/////////////////////////////////////////////
+// modelo pagina qrs
+
+function setup() {
+	let h = 100;
+
+	createCanvas(540, h).parent("contenedor-canvas");
+	displayMode("maxed");
+
+	background(200, 80, 20);
+}
+
+function draw() {
+	fill(255, 100);
+	circle(frameCount % width, frameCount % height, 100);
+}
+//
+/////////////////////////////////////////////
+
+		</script>
+  </body>
+</html>
