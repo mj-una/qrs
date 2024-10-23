@@ -81,7 +81,7 @@ let scrollAcc = 0;
 function setup() {
 
 	createCanvas(540, 960).parent("contenedor-canvas");
-	adaptarCanvas(); // resize y responsive
+	setTimeout(() => adaptarCanvas(), 11); // resize y responsive
 
 	background(140);
 	textAlign(CENTER, CENTER);
